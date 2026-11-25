@@ -19,7 +19,7 @@
 Necesitas Python 3.8 o superior.
 
 ```bash
-git clone https://github.com/TU-USUARIO/ram-scanner.git
+git clone https://github.com/mortiZimmerman/RamScanner.git
 cd RamScan
 python -m pip install -r requirements.txt
 ```
