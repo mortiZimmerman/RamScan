@@ -28,8 +28,8 @@
 Necesitas [Python 3.8+](https://www.python.org/downloads/).
 
 ```bash
-git clone https://github.com/TU-USUARIO/ram-scanner.git
-cd ram-scanner
+git clone https://github.com/mortiZimmerman/RamScanner.git
+cd RamScanner
 ```
 
 **Windows:** doble clic en `ram_scanner.bat` (instala `psutil` solo la primera vez y abre el navegador).
