@@ -23,8 +23,13 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 6px;
 td.n{text-align:right}.pct{height:6px;background:#26323a;border-radius:3px;min-width:70px}.pct i{display:block;height:100%;background:#6cb2ff;border-radius:3px}
 .go{background:#26323a;color:#e8edf0;border:1px solid #3a4953;border-radius:5px;padding:4px 9px;cursor:pointer;font:inherit}.go:hover{background:#33424b}
 .pid{font-size:12px;color:#8b9aa3}
+.hd{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.don{background:#0070ba;color:#fff;text-decoration:none;font-weight:700;padding:9px 16px;border-radius:8px;box-shadow:0 4px 0 #004f84}.don:hover{background:#0a82d4}
+details{border-bottom:1px solid #26323a;padding:8px 0}summary{cursor:pointer;font-weight:600}details p{margin:6px 0 2px;color:#b8c4cb}
+dialog{border:0;border-radius:12px;padding:22px;background:#2b343b;color:#e8edf0;max-width:380px;box-shadow:0 20px 50px #000a}dialog::backdrop{background:#000a}
+dialog .row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}.foot{text-align:center;color:#aab6be;margin-top:6px}.foot a{color:#6cb2ff}
 </style></head><body><div class="ch">
-<h1>RAM SCANNER</h1><p class="sub">Panel de control local · luz roja = bloqueado, verde = listo, ámbar = activo</p>
+<div class="hd"><div><h1>RAM SCANNER</h1><p class="sub">Panel de control local · luz roja = bloqueado, verde = listo, ámbar = activo</p></div><a class="don" href="https://paypal.me/mauortiz2002" target="_blank" rel="noopener">💙 Donar</a></div>
 <div class="keys">
 <button class="key rdy" id="k1"><i></i>1 · Escanear<small>Primer paso</small></button>
 <button class="key" id="k2" disabled><i></i>2 · Abrir informe<small>Página HTML</small></button>
@@ -38,7 +43,17 @@ td.n{text-align:right}.pct{height:6px;background:#26323a;border-radius:3px;min-w
 <div class="lcd"><h2>HISTORIAL DE USO</h2><svg id="hs" viewBox="0 0 600 90" width="100%" height="90" preserveAspectRatio="none"></svg><div class="mute mono" id="hn"></div></div>
 <div class="lcd"><h2>POSIBLES FUGAS DE MEMORIA</h2><div id="lk"></div></div>
 <div class="lcd"><h2>RANKING POR APLICACIÓN</h2><input id="q" placeholder="Buscar proceso o aplicación" aria-label="Buscar"><table><thead><tr><th>Aplicación</th><th>Proc.</th><th>RAM</th><th></th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
-</div></div>
+</div>
+<div class="lcd"><h2>PREGUNTAS FRECUENTES</h2>
+<details><summary>¿Es gratis?</summary><p>Sí. RAM Scanner es una app 100% gratuita, sin anuncios, sin cuentas y sin límites. Si te sirve y quieres apoyar el proyecto, puedes <a href="https://paypal.me/mauortiz2002" target="_blank" rel="noopener" style="color:#6cb2ff">donar con PayPal</a>; es totalmente voluntario.</p></details>
+<details><summary>¿Envía mis datos a internet?</summary><p>No. Todo se ejecuta en tu PC (127.0.0.1) y nada sale de él.</p></details>
+<details><summary>¿Por qué no coincide con el Administrador de tareas?</summary><p>RAM Scanner suma la memoria residente (RSS) de cada proceso y agrupa por aplicación. Las cifras pueden diferir ligeramente de otras herramientas, que cuentan la memoria compartida de otra forma.</p></details>
+<details><summary>¿Qué es una fuga de memoria?</summary><p>Un programa que pide memoria y no la devuelve, por lo que su consumo sube sin parar. Se detecta con el tiempo real activo.</p></details>
+<details><summary>No me abre la ubicación de un proceso</summary><p>Suele ser falta de permisos. Ejecuta el .bat como administrador.</p></details>
+<details><summary>¿Cómo salgo del programa?</summary><p>Cierra la ventana negra (o pulsa Ctrl+C en ella).</p></details>
+</div>
+<div class="foot">App gratuita · <a href="https://paypal.me/mauortiz2002" target="_blank" rel="noopener">💙 Invítame a un café</a></div></div>
+<dialog id="dg"><form id="dgf" method="post" action="/report" target="_blank"><input type="hidden" name="data" id="dd"><b>Abrir informe</b><p>Se abrirá en una pestaña nueva con los datos del último escaneo, y desde ahí podrás exportarlos.</p><div class="row"><button type="button" class="go" id="dgc">Cancelar</button><button class="go" style="background:#0f7a55;border-color:#0f7a55">Abrir informe</button></div></form></dialog>
 <script>
 const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const fmt=m=>m>=1024?(m/1024).toFixed(2)+' GB':Math.round(m)+' MB';
@@ -48,7 +63,9 @@ async function scan(){$('st').innerHTML='<div class="mono">Escaneando…</div>';
 function unlock(){['k2','k3','k4','k5'].forEach(k=>{$(k).disabled=false;$(k).classList.add('rdy')})}
 function live(on){clearInterval(timer);timer=on?setInterval(scan,3000):null;$('k3').classList.toggle('act',on);$('k3').classList.toggle('rdy',!on)}
 $('k1').onclick=async()=>{if(D&&!confirm('¿Escanear de nuevo?'))return;await scan();unlock()};
-$('k2').onclick=()=>{if(confirm('¿Abrir el informe HTML con los datos actuales en una pestaña nueva?'))window.open('/report','_blank')};
+$('k2').onclick=()=>$('dg').showModal();
+$('dgf').onsubmit=()=>{$('dd').value=JSON.stringify(D);$('dg').close()};
+$('dgc').onclick=()=>$('dg').close();
 $('k3').onclick=()=>{const on=!timer;if(confirm(on?'Se actualizará cada 3 segundos. ¿Activar tiempo real?':'¿Parar la actualización automática?'))live(on)};
 $('k4').onclick=()=>{const v=prompt('Avisar cuando un programa supere (GB). Deja 0 para desactivar:',thr||'1');if(v===null)return;const n=parseFloat(v.replace(',','.'))||0;
  if(n>0&&!confirm('¿Avisar cuando un programa supere '+n+' GB?'))return;thr=n;$('at').textContent=n?'Límite: '+n+' GB':'Límite en GB';$('k4').classList.toggle('act',n>0);draw()};

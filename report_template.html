@@ -26,13 +26,23 @@ th{cursor:pointer;color:var(--mute);font-weight:500;user-select:none}td.n{text-a
 .pct{height:6px;background:var(--line);border-radius:3px;min-width:80px}.pct i{display:block;height:100%;border-radius:3px}
 .up{color:#c4372b;font-weight:600}.wrap{overflow-x:auto}.pid{color:var(--mute);font-size:12px;word-break:break-all}
 :focus-visible{outline:2px solid #2f6fde;outline-offset:2px}
+.tool{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-10px 0 18px}.tool b{margin-right:4px}
+.don{margin-left:auto;background:#0070ba;color:#fff;text-decoration:none;font-weight:600;padding:6px 14px;border-radius:99px}.don:hover{background:#0a82d4}
+details{border-bottom:1px solid var(--line);padding:8px 0}summary{cursor:pointer;font-weight:600}details p{margin:6px 0 2px;color:var(--mute)}.foot{text-align:center;color:var(--mute)}.foot a{color:inherit}
+@media print{.tool,#q{display:none}}
 </style></head><body><main>
 <h1>RAM Scanner</h1><p class="sub" id="sub"></p>
+<div class="tool"><b>Exportar</b><button class="chip" id="ecsv">CSV</button><button class="chip" id="ejson">JSON</button><button class="chip" id="emd">Markdown</button><button class="chip" id="ehtml">HTML</button><button class="chip" onclick="print()">PDF / imprimir</button><a class="don" href="https://paypal.me/mauortiz2002" target="_blank" rel="noopener">💙 Donar</a></div>
 <section class="card"><h2>Memoria del sistema</h2><div class="bar" id="bar"></div><div class="nums" id="nums"></div></section>
 <section class="card"><h2>Mapa de consumo: cada bloque es una aplicación</h2><div class="mosaic" id="mos"></div><div class="leg" id="leg"></div></section>
 <section class="card"><h2>Qué te está pasando</h2><ul id="ins"></ul></section>
 <section class="card"><h2>Todas las aplicaciones</h2><input id="q" placeholder="Buscar por nombre, usuario o PID" aria-label="Buscar">
 <div class="wrap"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div></section>
+<section class="card"><h2>Preguntas frecuentes</h2>
+<details><summary>¿Es gratis?</summary><p>Sí, RAM Scanner es una app gratuita, sin anuncios ni cuentas. Si quieres apoyarla, puedes <a href="https://paypal.me/mauortiz2002" target="_blank" rel="noopener">donar con PayPal</a> (voluntario).</p></details>
+<details><summary>¿Qué mide la columna RAM?</summary><p>La memoria residente (RSS) de todos los procesos de cada aplicación, sumados.</p></details>
+<details><summary>¿Cómo exporto los datos?</summary><p>Con los botones de arriba: CSV (compatible con Excel), JSON, Markdown, HTML o PDF desde imprimir.</p></details></section>
+<p class="foot">App gratuita · <a href="https://paypal.me/mauortiz2002" target="_blank" rel="noopener">💙 Apóyala con una donación</a></p>
 <script id="d" type="application/json">__DATA__</script>
 <script>
 const D=JSON.parse(document.getElementById('d').textContent),$=i=>document.getElementById(i);
@@ -65,4 +75,9 @@ function draw(){
  $('tb').innerHTML=r.map(a=>`<tr><td><b>${a.name}</b><div class="pid">PID ${a.pids.slice(0,8).join(', ')}${a.pids.length>8?'…':''}</div></td><td>${a.cat}</td><td class="n">${a.count}</td><td class="n">${fmt(a.mb)}</td><td><div class="pct"><i style="width:${Math.min(100,a.mb/D.used*100*3)}%;background:${C[a.cat]}"></i></div></td>${hasG?`<td class="n ${a.growth>=50?'up':''}">${a.growth>0?'+':''}${a.growth} MB</td>`:''}</tr>`).join('')}
 $('th').onclick=e=>{const k=e.target.dataset.k;if(!k)return;dir=sort===k?-dir:(k==='name'||k==='cat'?1:-1);sort=k;draw()};
 $('q').oninput=draw;draw();
+const dl=(n,x,m)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([x],{type:m}));a.download=n;a.click()},st='ram-'+D.time.replace(/[: ]/g,'-'),q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+$('ecsv').onclick=()=>dl(st+'.csv','\ufeffaplicacion;categoria;procesos;ram_mb;usuario;pids\n'+D.apps.map(a=>[a.name,a.cat,a.count,a.mb,a.user,a.pids.join(' ')].map(q).join(';')).join('\n'),'text/csv');
+$('ejson').onclick=()=>dl(st+'.json',JSON.stringify(D,null,2),'application/json');
+$('emd').onclick=()=>dl(st+'.md',`# RAM Scanner · ${D.host} · ${D.time}\n\nEn uso: ${fmt(D.used)} de ${fmt(D.total)}\n\n| Aplicación | Categoría | Procesos | RAM |\n|---|---|---|---|\n`+D.apps.map(a=>`| ${a.name} | ${a.cat} | ${a.count} | ${fmt(a.mb)} |`).join('\n'),'text/markdown');
+$('ehtml').onclick=()=>dl(st+'.html','<!doctype html>'+document.documentElement.outerHTML,'text/html');
 </script></main></body></html>

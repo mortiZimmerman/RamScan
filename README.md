@@ -4,6 +4,10 @@
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue) ![Plataformas](https://img.shields.io/badge/Windows%20%7C%20macOS%20%7C%20Linux-lightgrey) ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 
+[![Donar](https://img.shields.io/badge/💙_Donar-PayPal-0070ba)](https://paypal.me/mauortiz2002)
+
+> **App 100% gratuita**, sin anuncios ni cuentas. Si te ha servido, puedes [invitarme a un café](https://paypal.me/mauortiz2002) (voluntario).
+
 ## ✨ Características
 
 - 🔒 **Panel por pasos**: primero se escanea; el resto de botones se desbloquean después (luz roja → verde → ámbar).
@@ -16,6 +20,7 @@
 - 💀 **Detector de fugas**: avisa de apps cuya memoria sube sin parar.
 - 📂 Botón **abrir ubicación** del programa.
 - 📄 **Informe HTML** con mapa de consumo, categorías y diagnóstico.
+- 📤 **Exportar** desde el informe a CSV (Excel), JSON, Markdown, HTML o PDF.
 - ✅ Confirmación antes de cada acción.
 
 ## 🚀 Instalación
@@ -47,6 +52,16 @@ Para salir, cierra la ventana negra (o `Ctrl+C`).
 
 > 💡 Ejecútalo como administrador (o con `sudo`) para ver todos los procesos y abrir sus ubicaciones.
 
+## ❓ FAQ
+
+**¿Es gratis?** Sí, totalmente gratuita y sin límites. Las donaciones por [PayPal](https://paypal.me/mauortiz2002) son voluntarias.
+
+**¿Envía datos a internet?** No, todo corre en `127.0.0.1`.
+
+**¿Por qué no coincide con el Administrador de tareas?** Suma la memoria residente (RSS) por aplicación; otras herramientas cuentan la memoria compartida de otra forma.
+
+**No me abre la ubicación de un proceso.** Ejecuta el `.bat` como administrador.
+
 ## 🔐 Seguridad
 
 El servidor escucha solo en `127.0.0.1`, rechaza peticiones con otro `Host` y exige una cabecera propia en las acciones, para que otras webs no puedan controlarlo.
@@ -54,12 +69,15 @@ El servidor escucha solo en `127.0.0.1`, rechaza peticiones con otro `Host` y ex
 ## 🗺️ Roadmap
 
 - [ ] Cerrar procesos desde el panel
-- [ ] Exportar a CSV/JSON
 - [ ] Comparar dos escaneos
 
 ## 🤝 Contribuir
 
 ¡Los PR son bienvenidos! Abre un issue con tu idea.
+
+## 💙 Apoyo
+
+Si RAM Scanner te ahorra tiempo, [dona por PayPal](https://paypal.me/mauortiz2002). ¡Gracias!
 
 ## 📜 Licencia
 

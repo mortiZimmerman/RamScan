@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """RAM Scanner · panel de control local para ver qué consume tu RAM."""
-import json, os, platform, socket, subprocess, sys, threading, webbrowser
+import json, os, platform, urllib.parse, socket, subprocess, sys, threading, webbrowser
 from collections import defaultdict, deque
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -75,6 +75,11 @@ def locate(path):
         subprocess.Popen(["xdg-open", os.path.dirname(path)])
 
 
+def render(data):
+    payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    return read("report_template.html").replace("__DATA__", payload)
+
+
 def read(name):
     with open(os.path.join(DIR, name), encoding="utf-8") as f:
         return f.read()
@@ -101,11 +106,20 @@ class H(BaseHTTPRequestHandler):
         if self.path == "/":
             return self.send(read("panel.html"), "text/html")
         if self.path == "/report":
-            payload = json.dumps(STATE["data"] or snap(), ensure_ascii=False).replace("</", "<\\/")
-            return self.send(read("report_template.html").replace("__DATA__", payload), "text/html")
+            return self.send(render(STATE["data"] or snap()), "text/html")
         self.send("not found", "text/plain", 404)
 
     def do_POST(self):
+        if self.path == "/report":  # el panel envía aquí los datos del escaneo (formulario)
+            origin_ok = self.headers.get("Origin") in (f"http://127.0.0.1:{PORT}", f"http://localhost:{PORT}")
+            if not (self.allowed() and origin_ok):
+                return self.send("forbidden", "text/plain", 403)
+            raw = self.rfile.read(int(self.headers.get("Content-Length", 0))).decode("utf-8")
+            try:
+                data = json.loads(urllib.parse.parse_qs(raw)["data"][0])
+            except Exception:
+                return self.send("datos no válidos", "text/plain", 400)
+            return self.send(render(data), "text/html")
         if not self.allowed() or self.headers.get("X-RS") != "1":
             return self.send("forbidden", "text/plain", 403)
         body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
