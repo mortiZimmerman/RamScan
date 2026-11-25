@@ -1,62 +1,66 @@
 # 🧠 RAM Scanner
 
-**¿Qué coño se está comiendo mi RAM?** RAM Scanner escanea todos los procesos, los agrupa por aplicación y te genera un informe visual en HTML (o JSON/CSV) para que lo veas de un vistazo.
+**¿Qué coño se está comiendo mi RAM?** Panel de control local, con botones físicos, que escanea tus procesos, los agrupa por aplicación y te lo enseña en el navegador. Todo corre en tu PC (`127.0.0.1`), no envía nada a internet.
 
-!\[Python](https://img.shields.io/badge/python-3.8%2B-blue) !\[Plataformas](https://img.shields.io/badge/Windows%20%7C%20macOS%20%7C%20Linux-lightgrey) !\[Licencia](https://img.shields.io/badge/licencia-MIT-green)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue) ![Plataformas](https://img.shields.io/badge/Windows%20%7C%20macOS%20%7C%20Linux-lightgrey) ![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 
 ## ✨ Características
 
-* 🗺️ **Mapa de consumo**: cada bloque es una app, su tamaño es lo que gasta.
-* 📦 **Agrupa por aplicación**: Chrome con 40 procesos aparece como una sola fila, con todos sus PID.
-* 🏷️ **Categorías** (navegadores, desarrollo, sistema...) con filtro y totales.
-* 💡 **Diagnóstico automático**: quién manda, apps con demasiados procesos, swap en uso, RAM al límite.
-* 🔍 **Detector de fugas** (`--watch`): marca las apps cuya memoria crece mientras vigilas.
-* 🔎 Tabla con **búsqueda y ordenación**. Modo claro/oscuro automático.
-* 📄 Exporta a **HTML, JSON o CSV**. Un solo archivo, sin conexión a internet.
+- 🔒 **Panel por pasos**: primero se escanea; el resto de botones se desbloquean después (luz roja → verde → ámbar).
+- 🔍 Escaneo rápido y **barra visual** de uso total (verde / ámbar / rojo según el nivel).
+- 🏆 **Ranking** de aplicaciones con **buscador**.
+- 📁 **Agrupa por aplicación**: los 20 procesos de Brave salen como una sola fila.
+- 📈 **Historial** de uso de RAM en gráfica.
+- 🔄 **Tiempo real** (cada 3 s).
+- ⚠️ **Alertas** cuando un programa supera X GB.
+- 💀 **Detector de fugas**: avisa de apps cuya memoria sube sin parar.
+- 📂 Botón **abrir ubicación** del programa.
+- 📄 **Informe HTML** con mapa de consumo, categorías y diagnóstico.
+- ✅ Confirmación antes de cada acción.
 
 ## 🚀 Instalación
 
-Necesitas Python 3.8 o superior.
+Necesitas [Python 3.8+](https://www.python.org/downloads/).
 
 ```bash
-git clone https://github.com/mortiZimmerman/RamScanner.git
-cd RamScan
-python -m pip install -r requirements.txt
+git clone https://github.com/TU-USUARIO/ram-scanner.git
+cd ram-scanner
 ```
 
-## 🧪 Uso
+**Windows:** doble clic en `ram_scanner.bat` (instala `psutil` solo la primera vez y abre el navegador).
 
+**macOS / Linux:**
 ```bash
-python ram\_scanner.py --open                 # informe HTML y lo abre en el navegador
-python ram\_scanner.py -o datos.csv           # exporta a CSV (también .json)
-python ram\_scanner.py --top 30               # solo las 30 apps que más consumen
-python ram\_scanner.py --watch 60 --open      # vigila 60 s y detecta fugas de memoria
+pip install -r requirements.txt
+python3 ram_scanner.py
 ```
 
-|Opción|Qué hace|
-|-|-|
-|`-o, --output`|Archivo de salida. La extensión decide el formato (`.html`, `.json`, `.csv`).|
-|`--top N`|Guarda solo las N apps con más consumo.|
-|`-w, --watch SEG`|Toma dos fotos con SEG segundos de diferencia y marca las que crecen.|
-|`--open`|Abre el informe al terminar.|
+Para salir, cierra la ventana negra (o `Ctrl+C`).
 
-> 💡 En Windows/macOS/Linux, ejecútalo como administrador (o con `sudo`) para ver los procesos de otros usuarios.
+## 🕹️ Cómo se usa
 
-## ⚙️ Cómo funciona
+1. **Escanear**: lee todos los procesos y desbloquea el panel.
+2. **Abrir informe**: informe HTML completo en pestaña nueva.
+3. **Tiempo real**: refresca cada 3 s y construye el historial.
+4. **Alerta**: te avisa si una app pasa del límite en GB.
+5. **Fugas**: con tiempo real activo, marca las apps que suben 30 MB o más en 6 lecturas seguidas.
 
-Usa [`psutil`](https://github.com/giampaolo/psutil) para leer la memoria residente (RSS) de cada proceso, los suma por nombre y rellena una plantilla HTML (`report\_template.html`) con los datos incrustados.
+> 💡 Ejecútalo como administrador (o con `sudo`) para ver todos los procesos y abrir sus ubicaciones.
+
+## 🔐 Seguridad
+
+El servidor escucha solo en `127.0.0.1`, rechaza peticiones con otro `Host` y exige una cabecera propia en las acciones, para que otras webs no puedan controlarlo.
 
 ## 🗺️ Roadmap
 
-* \[ ] Modo en vivo con servidor local
-* \[ ] Comparar dos informes
-* \[ ] Botón para cerrar procesos
+- [ ] Cerrar procesos desde el panel
+- [ ] Exportar a CSV/JSON
+- [ ] Comparar dos escaneos
 
 ## 🤝 Contribuir
 
-¡Los PR son bienvenidos! Abre un issue con tu idea o envía directamente tu pull request.
+¡Los PR son bienvenidos! Abre un issue con tu idea.
 
 ## 📜 Licencia
 
 MIT
-

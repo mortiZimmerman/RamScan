@@ -1,0 +1,115 @@
+aplicacion,categoria,procesos,ram_mb,usuario,pids
+brave.exe,Navegadores,20,2675.2,DESKTOP-AIFOPCD\calyp,432 604 2992 7032 9108 9324 13008 16328 21044 22356 22796 23300 24544 24732 25884 26316 26716 27076 27092 28380
+Code.exe,Desarrollo,11,1973.0,DESKTOP-AIFOPCD\calyp,7100 8076 9348 21448 23096 24068 24292 24616 25260 28036 28640
+claude.exe,Otros,8,1244.6,DESKTOP-AIFOPCD\calyp,9904 20520 23748 24164 24768 25552 26020 27248
+MemCompression,Otros,1,1016.8,,3480
+svchost.exe,Sistema,45,981.2,,1292 1488 1504 1920 2060 2080 2088 2100 2280 2688 2720 2844 2852 2996 3004 3344 3520 3536 3576 3640 3684 3912 4104 4208 4480 4600 4700 4984 5468 5744 5804 6856 8912 9044 9132 9272 9360 10552 10604 12116
+Discord.exe,Comunicación,6,942.9,DESKTOP-AIFOPCD\calyp,4652 4948 5072 5124 5712 6080
+msedgewebview2.exe,Navegadores,15,631.2,DESKTOP-AIFOPCD\calyp,3280 3284 7408 10792 11252 13772 14552 14868 14892 14944 15036 15172 18580 18900 24256
+dwm.exe,Sistema,1,409.7,,2288
+msedge.exe,Navegadores,7,402.8,DESKTOP-AIFOPCD\calyp,3036 4612 14904 27204 27336 27436 27444
+MsMpEng.exe,Otros,1,365.4,,4968
+Telegram.exe,Comunicación,1,362.3,DESKTOP-AIFOPCD\calyp,14308
+NVIDIA Overlay.exe,Otros,5,337.2,DESKTOP-AIFOPCD\calyp,3816 11480 12236 13792 13964
+explorer.exe,Sistema,1,331.8,DESKTOP-AIFOPCD\calyp,11588
+WhatsApp.Root.exe,Comunicación,1,261.3,DESKTOP-AIFOPCD\calyp,1140
+Notepad.exe,Otros,2,252.9,DESKTOP-AIFOPCD\calyp,23508 26372
+nvcontainer.exe,Otros,5,205.7,DESKTOP-AIFOPCD\calyp,4940 8448 10500 10576 10700
+Taskmgr.exe,Otros,1,176.2,DESKTOP-AIFOPCD\calyp,11136
+StartMenuExperienceHost.exe,Otros,1,143.9,DESKTOP-AIFOPCD\calyp,12636
+SearchHost.exe,Otros,1,139.3,DESKTOP-AIFOPCD\calyp,12596
+TextInputHost.exe,Otros,1,131.3,DESKTOP-AIFOPCD\calyp,3824
+RuntimeBroker.exe,Otros,5,130.6,DESKTOP-AIFOPCD\calyp,3988 10940 13132 19200 24332
+PresentMonService.exe,Otros,2,119.4,,4916 7660
+NVDisplay.Container.exe,Otros,2,119.3,,3416 5484
+powershell.exe,Otros,1,117.0,DESKTOP-AIFOPCD\calyp,564
+DCv2.exe,Otros,1,115.2,DESKTOP-AIFOPCD\calyp,19144
+OpenWith.exe,Otros,1,115.0,DESKTOP-AIFOPCD\calyp,26424
+DSAService.exe,Otros,1,108.8,,4724
+DSATray.exe,Otros,1,90.8,DESKTOP-AIFOPCD\calyp,11456
+copilot-runtime.exe,Otros,1,88.5,DESKTOP-AIFOPCD\calyp,612
+SurSvc.exe,Otros,1,87.1,,4864
+ShellExperienceHost.exe,Otros,1,85.7,DESKTOP-AIFOPCD\calyp,5400
+esrv_svc.exe,Otros,1,82.8,,8472
+eclean.exe,Otros,2,80.8,DESKTOP-AIFOPCD\calyp,18608 18748
+MSI.CentralServer.exe,Otros,1,80.6,,9288
+WmiPrvSE.exe,Otros,3,75.5,,5948 7220 7472
+lghub_system_tray.exe,Sistema,1,72.9,DESKTOP-AIFOPCD\calyp,18012
+lghub_agent.exe,Otros,1,68.2,DESKTOP-AIFOPCD\calyp,18072
+?,Otros,1,65.3,,336
+ShellHost.exe,Otros,1,56.7,DESKTOP-AIFOPCD\calyp,11636
+CrossDeviceResume.exe,Otros,1,53.2,DESKTOP-AIFOPCD\calyp,11980
+Registry,Otros,1,49.8,,376
+LEDKeeper2.exe,Otros,1,49.6,DESKTOP-AIFOPCD\calyp,10968
+sihost.exe,Otros,1,48.7,DESKTOP-AIFOPCD\calyp,10760
+IntelGraphicsSoftware.Service.exe,Otros,1,45.1,,4796
+DSAUpdateService.exe,Otros,1,43.0,,4732
+IntelGraphicsSoftware.Service.Graphics.exe,Otros,1,42.7,,4016
+ApplicationFrameHost.exe,Otros,1,42.3,DESKTOP-AIFOPCD\calyp,27028
+esrv.exe,Otros,1,41.8,DESKTOP-AIFOPCD\calyp,13540
+python.exe,Desarrollo,2,38.4,DESKTOP-AIFOPCD\calyp,23824 26812
+RtkAudUService64.exe,Otros,2,37.9,DESKTOP-AIFOPCD\calyp,5012 16208
+MSIAPService.exe,Otros,1,37.0,,4764
+Sendevsvc.exe,Otros,1,36.7,,4772
+conhost.exe,Otros,5,36.4,,6788 7628 9328 12812 13828
+WUDFHost.exe,Otros,3,35.5,,1996 2304 11044
+bash.exe,Otros,3,34.7,DESKTOP-AIFOPCD\calyp,25032 25908 28376
+IntelAudioService.exe,Otros,1,34.4,,4836
+lsass.exe,Otros,1,33.1,,1720
+ctfmon.exe,Otros,1,32.3,DESKTOP-AIFOPCD\calyp,16488
+LightKeeperService.exe,Otros,1,28.2,,4756
+audiodg.exe,Otros,1,27.3,,12648
+MSI_Companion_Service.exe,Otros,1,25.0,,4844
+DiscordSystemHelper.exe,Comunicación,2,25.0,DESKTOP-AIFOPCD\calyp,21032 21120
+SearchIndexer.exe,Otros,1,24.1,,2372
+MpDefenderCoreService.exe,Otros,1,23.7,,4888
+NVChecker.exe,Otros,1,23.6,,18948
+NahimicService.exe,Otros,1,22.7,,4884
+collector_service.exe,Otros,1,22.6,,4824
+lghub_updater.exe,Otros,1,22.6,,4876
+OpenConsole.exe,Otros,2,22.2,DESKTOP-AIFOPCD\calyp,2036 28536
+taskhostw.exe,Otros,1,22.2,DESKTOP-AIFOPCD\calyp,11112
+telemetry_agent.exe,Otros,1,21.9,,8660
+dllhost.exe,Otros,1,21.4,DESKTOP-AIFOPCD\calyp,23456
+Mystic_Light_Service.exe,Otros,1,19.7,,4932
+cowork-svc.exe,Otros,1,19.4,,14032
+services.exe,Otros,1,18.9,,1692
+winlogon.exe,Otros,1,18.7,,1784
+spoolsv.exe,Otros,1,18.1,,4308
+IntelGraphicsSoftware.Overlay.exe,Otros,1,17.0,DESKTOP-AIFOPCD\calyp,19604
+fontdrvhost.exe,Otros,2,16.9,,1932 1936
+MSI.TerminalServer.exe,Otros,1,16.6,DESKTOP-AIFOPCD\calyp,16516
+nvsphelper64.exe,Otros,1,16.1,DESKTOP-AIFOPCD\calyp,12152
+csrss.exe,Otros,2,16.0,,1500 1620
+IntelGraphicsSoftware.exe,Otros,1,15.4,DESKTOP-AIFOPCD\calyp,19340
+NisSrv.exe,Otros,1,15.3,,10064
+vmcompute.exe,Otros,1,15.0,,4976
+MSI_Central_Service.exe,Otros,1,14.4,,4788
+logi_lamparray_service.AMD64.exe,Otros,1,14.2,,4748
+WMIRegistrationService.exe,Otros,1,14.2,,4908
+wlanext.exe,Otros,1,14.0,,9648
+AdobeCollabSync.exe,Otros,2,13.6,DESKTOP-AIFOPCD\calyp,16624 20528
+Intel_PIE_Service.exe,Otros,1,11.9,,9936
+ipf_helper.exe,Otros,1,11.5,DESKTOP-AIFOPCD\calyp,10824
+unsecapp.exe,Otros,1,11.2,DESKTOP-AIFOPCD\calyp,16996
+AdobeUpdateService.exe,Otros,1,9.2,,4680
+OmApSvcBroker.exe,Otros,1,9.1,DESKTOP-AIFOPCD\calyp,12168
+MSIService.exe,Otros,1,8.8,,4740
+wininit.exe,Otros,1,8.7,,1612
+NahimicAPO4Volume.exe,Otros,1,8.1,DESKTOP-AIFOPCD\calyp,10444
+jhi_service.exe,Otros,1,7.9,,4808
+armsvc.exe,Otros,1,7.8,,4688
+ipf_uf.exe,Otros,1,7.6,,5088
+IntelCpHDCPSvc.exe,Otros,1,7.4,,2452
+dasHost.exe,Otros,1,7.1,,9784
+ipfsvc.exe,Otros,1,6.3,,4952
+DefenderAiPlatformHost.exe,Otros,1,6.1,,1728
+MicrosoftEdgeUpdate.exe,Navegadores,1,5.6,,18588
+DefenderSessionHelper.exe,Otros,1,5.4,DESKTOP-AIFOPCD\calyp,10684
+acrotray.exe,Otros,1,5.2,DESKTOP-AIFOPCD\calyp,16724
+NgcIso.exe,Otros,1,4.2,,9076
+LsaIso.exe,Otros,1,3.5,,1712
+smss.exe,Otros,1,1.5,,1168
+System,Sistema,1,0.1,NT AUTHORITY\SYSTEM,4
+System Idle Process,Sistema,1,0.0,NT AUTHORITY\SYSTEM,0
+vmmemCmZygote,Desarrollo,1,0.0,,10924

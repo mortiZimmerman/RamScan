@@ -1,0 +1,73 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAM Scanner · Panel</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#262d33;color:#e8edf0;font:14px/1.45 system-ui,Segoe UI,sans-serif}
+.ch{max-width:1020px;margin:18px auto;padding:22px;border-radius:14px;background:linear-gradient(#47535d,#37414a);box-shadow:inset 0 2px 0 #5d6a75,0 14px 30px #0007}
+h1{margin:0 0 4px;font:800 26px system-ui;letter-spacing:.04em}.sub{margin:0 0 18px;color:#aab6be}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:20px}
+.key{position:relative;padding:18px 10px 12px;border:0;border-radius:10px;background:linear-gradient(#f3f5f6,#c7cfd4);color:#1d252b;font:700 15px system-ui;box-shadow:0 6px 0 #7b8892,0 10px 14px #0006;cursor:pointer;text-align:center;transition:transform .08s,box-shadow .08s}
+.key small{display:block;font-weight:400;color:#4a5760;margin-top:3px}
+.key:active:not(:disabled){transform:translateY(5px);box-shadow:0 1px 0 #7b8892}
+.key i{position:absolute;top:8px;right:10px;width:10px;height:10px;border-radius:50%;background:#e5484d;box-shadow:0 0 7px #e5484d}
+.key.rdy i{background:#3ddc97;box-shadow:0 0 8px #3ddc97}.key.act i{background:#ffb224;box-shadow:0 0 8px #ffb224;animation:b 1s infinite}
+@keyframes b{50%{opacity:.35}}@media(prefers-reduced-motion:reduce){.key.act i{animation:none}}
+.key:disabled{filter:grayscale(1) brightness(.62);cursor:not-allowed}.key:focus-visible,.go:focus-visible{outline:3px solid #6cb2ff;outline-offset:3px}
+.lcd{background:#161d22;border:2px solid #0d1215;border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:inset 0 3px 12px #000a}
+.lcd h2{margin:0 0 10px;font:600 13px ui-monospace,Consolas,monospace;color:#7fa89a}
+.mono{font-family:ui-monospace,Consolas,monospace}.big{font:700 30px ui-monospace,Consolas,monospace;color:#9be7c4}
+.bar{height:16px;background:#26323a;border-radius:3px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:#3ddc97}
+.warn{color:#ffb224}.bad{color:#ff6b6b}.mute{color:#8b9aa3}
+.alert{background:#4a1f22;border:1px solid #ff6b6b;border-radius:6px;padding:8px 12px;margin:6px 0}
+input{width:100%;padding:9px 12px;border:1px solid #33424b;border-radius:4px;background:#10161a;color:#e8edf0;font:inherit;margin-bottom:8px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid #26323a}th{color:#7fa89a;font-weight:500}
+td.n{text-align:right}.pct{height:6px;background:#26323a;border-radius:3px;min-width:70px}.pct i{display:block;height:100%;background:#6cb2ff;border-radius:3px}
+.go{background:#26323a;color:#e8edf0;border:1px solid #3a4953;border-radius:5px;padding:4px 9px;cursor:pointer;font:inherit}.go:hover{background:#33424b}
+.pid{font-size:12px;color:#8b9aa3}
+</style></head><body><div class="ch">
+<h1>RAM SCANNER</h1><p class="sub">Panel de control local · luz roja = bloqueado, verde = listo, ámbar = activo</p>
+<div class="keys">
+<button class="key rdy" id="k1"><i></i>1 · Escanear<small>Primer paso</small></button>
+<button class="key" id="k2" disabled><i></i>2 · Abrir informe<small>Página HTML</small></button>
+<button class="key" id="k3" disabled><i></i>3 · Tiempo real<small>Cada 3 s</small></button>
+<button class="key" id="k4" disabled><i></i>4 · Alerta<small id="at">Límite en GB</small></button>
+<button class="key" id="k5" disabled><i></i>5 · Fugas<small>Memory leaks</small></button>
+</div>
+<div class="lcd" id="st"><div class="mute mono">Pulsa 1 · ESCANEAR para desbloquear el resto del panel.</div></div>
+<div id="main" hidden>
+<div class="lcd"><h2>MEMORIA</h2><div id="ro"></div><div class="bar"><i id="bi"></i></div><div id="al"></div></div>
+<div class="lcd"><h2>HISTORIAL DE USO</h2><svg id="hs" viewBox="0 0 600 90" width="100%" height="90" preserveAspectRatio="none"></svg><div class="mute mono" id="hn"></div></div>
+<div class="lcd"><h2>POSIBLES FUGAS DE MEMORIA</h2><div id="lk"></div></div>
+<div class="lcd"><h2>RANKING POR APLICACIÓN</h2><input id="q" placeholder="Buscar proceso o aplicación" aria-label="Buscar"><table><thead><tr><th>Aplicación</th><th>Proc.</th><th>RAM</th><th></th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+</div></div>
+<script>
+const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const fmt=m=>m>=1024?(m/1024).toFixed(2)+' GB':Math.round(m)+' MB';
+let D=null,timer=null,thr=0;
+const api=async(p,b)=>(await fetch(p,{method:'POST',headers:{'X-RS':'1'},body:JSON.stringify(b||{})})).json();
+async function scan(){$('st').innerHTML='<div class="mono">Escaneando…</div>';try{D=await api('/api/scan');draw()}catch(e){$('st').innerHTML='<div class="bad mono">No se pudo escanear. ¿Sigue abierta la ventana negra del programa?</div>'}}
+function unlock(){['k2','k3','k4','k5'].forEach(k=>{$(k).disabled=false;$(k).classList.add('rdy')})}
+function live(on){clearInterval(timer);timer=on?setInterval(scan,3000):null;$('k3').classList.toggle('act',on);$('k3').classList.toggle('rdy',!on)}
+$('k1').onclick=async()=>{if(D&&!confirm('¿Escanear de nuevo?'))return;await scan();unlock()};
+$('k2').onclick=()=>{if(confirm('¿Abrir el informe HTML con los datos actuales en una pestaña nueva?'))window.open('/report','_blank')};
+$('k3').onclick=()=>{const on=!timer;if(confirm(on?'Se actualizará cada 3 segundos. ¿Activar tiempo real?':'¿Parar la actualización automática?'))live(on)};
+$('k4').onclick=()=>{const v=prompt('Avisar cuando un programa supere (GB). Deja 0 para desactivar:',thr||'1');if(v===null)return;const n=parseFloat(v.replace(',','.'))||0;
+ if(n>0&&!confirm('¿Avisar cuando un programa supere '+n+' GB?'))return;thr=n;$('at').textContent=n?'Límite: '+n+' GB':'Límite en GB';$('k4').classList.toggle('act',n>0);draw()};
+$('k5').onclick=()=>{if(!timer){if(confirm('Para detectar fugas hay que medir varias veces seguidas. ¿Activar tiempo real ahora?'))live(true)}else alert('La detección ya está en marcha. Las apps que suban sin parar aparecerán en el recuadro de fugas.')};
+$('q').oninput=()=>D&&rows();
+$('tb').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+ if(!confirm('¿Abrir la carpeta donde está '+b.dataset.n+'?'))return;
+ const r=await api('/api/locate',{pid:b.dataset.p});if(!r.ok)alert('No se pudo abrir la ubicación (puede requerir permisos de administrador).')};
+function rows(){const q=$('q').value.toLowerCase();
+ $('tb').innerHTML=D.apps.filter(a=>!q||(a.name+a.user+a.pids.join(' ')).toLowerCase().includes(q)).slice(0,150).map(a=>
+ `<tr><td><b>${esc(a.name)}</b><div class="pid">PID ${a.pids.slice(0,6).join(', ')}${a.pids.length>6?'…':''}</div></td><td class="n">${a.count}</td><td class="n mono">${fmt(a.mb)}</td>
+ <td><div class="pct"><i style="width:${Math.min(100,a.mb/D.used*300)}%"></i></div></td><td><button class="go" data-p="${a.pids[0]}" data-n="${esc(a.name)}">📂 Ubicación</button></td></tr>`).join('')}
+function draw(){$('main').hidden=false;const p=D.used/D.total*100;
+ $('st').innerHTML=`<div class="mono">Último escaneo: ${D.time} · ${esc(D.host)} · ${live?'':''}${timer?'<span class="warn">tiempo real activo</span>':'manual'}</div>`;
+ $('ro').innerHTML=`<span class="big">${fmt(D.used)}</span> <span class="mute">de ${fmt(D.total)} · ${p.toFixed(0)}% en uso · ${fmt(D.free)} libres</span>`;
+ $('bi').style.width=p+'%';$('bi').style.background=p>85?'#ff6b6b':p>70?'#ffb224':'#3ddc97';
+ $('al').innerHTML=thr?D.apps.filter(a=>a.mb>=thr*1024).map(a=>`<div class="alert">⚠️ <b>${esc(a.name)}</b> usa ${fmt(a.mb)} y supera tu límite de ${thr} GB.</div>`).join(''):'';
+ const h=D.history,mx=D.total;$('hs').innerHTML=h.length>1?`<polyline fill="none" stroke="#3ddc97" stroke-width="2" vector-effect="non-scaling-stroke" points="${h.map((x,i)=>(i/(h.length-1)*600).toFixed(1)+','+(88-x[1]/mx*84).toFixed(1)).join(' ')}"/>`:'';
+ $('hn').textContent=h.length>1?`${h.length} lecturas (${h[0][0]} → ${h[h.length-1][0]})`:'Activa el tiempo real para ir construyendo el historial.';
+ $('lk').innerHTML=D.leaks.length?D.leaks.map(a=>`<div class="alert">💀 <b>${esc(a.name)}</b> ha subido ${fmt(a.growth)} en las últimas 6 lecturas (ahora ${fmt(a.mb)}).</div>`).join(''):`<span class="mute mono">Sin fugas detectadas. Hacen falta al menos 6 lecturas seguidas (llevas ${h.length}).</span>`;
+ rows()}
+</script></body></html>
