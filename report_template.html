@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAM Scanner</title>
+<style>
+:root{--bg:#eceee8;--card:#fbfbf8;--ink:#1c2b2e;--mute:#66767a;--line:#d4d9d2;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#161d1f;--card:#1f282a;--ink:#e6ece9;--mute:#8d9d9f;--line:#33403f;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:32px 20px 60px}
+h1{font:700 44px/1 Georgia,'Iowan Old Style',serif;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--mute);margin:0 0 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px;margin-bottom:18px}
+h2{font:600 17px Georgia,serif;margin:0 0 12px}
+.bar{display:flex;height:34px;border:1px solid var(--line);border-radius:4px;overflow:hidden;gap:2px;background:var(--line)}
+.bar i{display:block;background:#2f6fde}.bar i.f{background:var(--card)}
+.nums{display:flex;gap:28px;flex-wrap:wrap;margin-top:10px;color:var(--mute)}.nums b{color:var(--ink);font:600 22px Georgia,serif;display:block}
+.mosaic{display:flex;flex-wrap:wrap;gap:3px}
+.blk{min-height:78px;padding:8px 10px;color:#fff;border-radius:3px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.blk b{font-weight:600;word-break:break-all}.blk span{font-size:13px;opacity:.9}
+.leg{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{border:1px solid var(--line);background:none;color:var(--ink);padding:4px 10px;border-radius:99px;cursor:pointer;font:inherit;font-size:13px}
+.chip.on{background:var(--ink);color:var(--bg)}.chip u{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px}
+ul{margin:0;padding-left:18px}li{margin:4px 0}
+input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:inherit;margin-bottom:10px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+th{cursor:pointer;color:var(--mute);font-weight:500;user-select:none}td.n{text-align:right;font-variant-numeric:tabular-nums}
+.pct{height:6px;background:var(--line);border-radius:3px;min-width:80px}.pct i{display:block;height:100%;border-radius:3px}
+.up{color:#c4372b;font-weight:600}.wrap{overflow-x:auto}.pid{color:var(--mute);font-size:12px;word-break:break-all}
+:focus-visible{outline:2px solid #2f6fde;outline-offset:2px}
+</style></head><body><main>
+<h1>RAM Scanner</h1><p class="sub" id="sub"></p>
+<section class="card"><h2>Memoria del sistema</h2><div class="bar" id="bar"></div><div class="nums" id="nums"></div></section>
+<section class="card"><h2>Mapa de consumo: cada bloque es una aplicación</h2><div class="mosaic" id="mos"></div><div class="leg" id="leg"></div></section>
+<section class="card"><h2>Qué te está pasando</h2><ul id="ins"></ul></section>
+<section class="card"><h2>Todas las aplicaciones</h2><input id="q" placeholder="Buscar por nombre, usuario o PID" aria-label="Buscar">
+<div class="wrap"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div></section>
+<script id="d" type="application/json">__DATA__</script>
+<script>
+const D=JSON.parse(document.getElementById('d').textContent),$=i=>document.getElementById(i);
+const C={"Navegadores":"#2f6fde","Desarrollo":"#7b4bc9","Comunicación":"#0e8f80","Multimedia y juegos":"#c2386f","Sistema":"#5b6b73","Otros":"#b87a06"};
+const fmt=m=>m>=1024?(m/1024).toFixed(2)+' GB':Math.round(m)+' MB',hasG=D.apps.some(a=>'growth'in a);
+let cat=null,sort='mb',dir=-1;
+$('sub').textContent=`${D.host} · ${D.os} · ${D.time}`;
+const pu=D.used/D.total*100;
+$('bar').innerHTML=`<i style="width:${pu}%"></i><i class="f" style="flex:1"></i>`;
+$('nums').innerHTML=`<div><b>${fmt(D.used)}</b>en uso (${pu.toFixed(0)}%)</div><div><b>${fmt(D.free)}</b>disponible</div><div><b>${fmt(D.total)}</b>total</div>`+(D.swap_total?`<div><b>${fmt(D.swap_used)}</b>swap usada</div>`:'');
+const top=D.apps.slice(0,28);
+$('mos').innerHTML=top.map(a=>`<div class="blk" title="${a.cmd.replace(/"/g,'')}" style="flex:${a.mb} 1 ${Math.max(95,a.mb/D.used*700)}px;background:${C[a.cat]}" onclick="$('q').value='${a.name.replace(/'/g,'')}';draw()"><b>${a.name}</b><span>${fmt(a.mb)} · ${a.count} proc.</span></div>`).join('');
+const tot={};D.apps.forEach(a=>tot[a.cat]=(tot[a.cat]||0)+a.mb);
+$('leg').innerHTML=Object.keys(tot).sort((x,y)=>tot[y]-tot[x]).map(c=>`<button class="chip" data-c="${c}"><u style="background:${C[c]}"></u>${c} ${fmt(tot[c])}</button>`).join('');
+$('leg').onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=cat===b.dataset.c?null:b.dataset.c;[...$('leg').children].forEach(x=>x.classList.toggle('on',x.dataset.c===cat));draw()};
+const ins=[],a0=D.apps[0],t3=D.apps.slice(0,3).reduce((s,a)=>s+a.mb,0);
+if(a0)ins.push(`<b>${a0.name}</b> es el mayor consumidor: ${fmt(a0.mb)} repartidos en ${a0.count} proceso(s) (${(a0.mb/D.used*100).toFixed(0)}% de la RAM en uso).`);
+ins.push(`Las 3 apps principales suman ${fmt(t3)}, el ${(t3/D.used*100).toFixed(0)}% de lo que está en uso.`);
+D.apps.filter(a=>a.count>=10).slice(0,3).forEach(a=>ins.push(`<b>${a.name}</b> tiene ${a.count} procesos abiertos; cerrar pestañas o ventanas libera memoria.`));
+D.apps.filter(a=>a.growth>=50).forEach(a=>ins.push(`<span class="up">Posible fuga:</span> <b>${a.name}</b> ha crecido ${fmt(a.growth)} durante la vigilancia.`));
+if(pu>85)ins.push(`<span class="up">La RAM está al ${pu.toFixed(0)}%.</span> Conviene cerrar algo o ampliar memoria.`);
+if(D.swap_used>512)ins.push(`Se está usando ${fmt(D.swap_used)} de swap: el sistema se queda corto de RAM.`);
+$('ins').innerHTML=ins.map(i=>`<li>${i}</li>`).join('');
+const cols=[['name','Aplicación'],['cat','Categoría'],['count','Procesos'],['mb','RAM'],['p','% en uso']].concat(hasG?[['growth','Crecimiento']]:[]);
+function draw(){
+ $('th').innerHTML='<tr>'+cols.map(c=>`<th data-k="${c[0]}">${c[1]}${sort===c[0]?(dir<0?' ▾':' ▴'):''}</th>`).join('')+'</tr>';
+ const q=$('q').value.toLowerCase();
+ const r=D.apps.filter(a=>(!cat||a.cat===cat)&&(!q||(a.name+a.user+a.pids.join(' ')).toLowerCase().includes(q)));
+ r.sort((a,b)=>{const k=sort==='p'?'mb':sort;return(a[k]>b[k]?1:-1)*dir});
+ $('tb').innerHTML=r.map(a=>`<tr><td><b>${a.name}</b><div class="pid">PID ${a.pids.slice(0,8).join(', ')}${a.pids.length>8?'…':''}</div></td><td>${a.cat}</td><td class="n">${a.count}</td><td class="n">${fmt(a.mb)}</td><td><div class="pct"><i style="width:${Math.min(100,a.mb/D.used*100*3)}%;background:${C[a.cat]}"></i></div></td>${hasG?`<td class="n ${a.growth>=50?'up':''}">${a.growth>0?'+':''}${a.growth} MB</td>`:''}</tr>`).join('')}
+$('th').onclick=e=>{const k=e.target.dataset.k;if(!k)return;dir=sort===k?-dir:(k==='name'||k==='cat'?1:-1);sort=k;draw()};
+$('q').oninput=draw;draw();
+</script></main></body></html>
